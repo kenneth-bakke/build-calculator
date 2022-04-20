@@ -1,0 +1,79 @@
+{
+  "name": "Bingosa",
+  "class": "wretch",
+  "keepsake": "",
+  "stats": {
+    "level": 1,
+    "runesHeld": 0,
+    "runesNeededForOneLevel": 673,
+    "attributes": {
+      "vigor": 10,
+      "mind": 10,
+      "endurance": 10,
+      "strength": 10,
+      "dexterity": 10,
+      "intelligence": 10,
+      "faith": 10,
+      "arcane": 10
+    },
+    "generalStats": {
+      "HP": 300,
+      "FP": 40,
+      "stamina": 80,
+      "equipLoad": 45.0,
+      "poise": 0,
+      "discovery": 101,
+      "memorySlots": 0
+    },
+    "defenseStats": {
+      "immunity": {
+        "value": 0,
+        "resistances": ["poison", "blights"]
+      },
+      "robustness": {
+        "value": 0,
+        "resistances": ["hemorrhage", "frostbite"]
+      },
+      "focus": {
+        "value": 0,
+        "resistances": ["sleep", "madness"]
+      },
+      "vitality": {
+        "value": 0,
+        "resistances": ["instant death"]
+      },
+      "physical": {
+        "value": 0,
+        "resistances": ["standardPhysicalAttacks"]
+      },
+      "strike": {
+        "value": 0,
+        "resistances": ["strikingPhysicalAttacks"]
+      },
+      "slash": {
+        "value": 0,
+        "resistances": ["slashingPhysicalAttacks"]
+      },
+      "pierce": {
+        "value": 0,
+        "resistances": ["piercingPhysicalAttacks", "pierceHawthorne"]
+      },
+      "magic": {
+        "value": 0,
+        "resistances": ["magicalAttacks"]
+      },
+      "fire": {
+        "value": 0,
+        "resistances": ["fireElementalAttacks"]
+      },
+      "lightning": {
+        "value": 0,
+        "resistances": ["lightningElementalAttacks"]
+      },
+      "holy": {
+        "value": 0,
+        "resistances": ["holyElementalAttacks"]
+      }
+    }
+  }
+}
