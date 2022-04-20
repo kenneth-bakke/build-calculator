@@ -1,7 +1,44 @@
 {
   "name": "Bingosa",
   "class": "wretch",
-  "keepsake": "",
+  "keepsake": {
+    "crimsonAmberMedallion": {
+      "numberHeld": 1,
+      "chosen": true
+    },
+    "landsBetweenRune": {
+      "numberHeld": 1,
+      "chosen": false
+    },
+    "goldenSeed": {
+      "numberHeld": 1,
+      "chosen": false
+    },
+    "fangedImpAshes": {
+      "numberHeld": 1,
+      "chosen": false
+    },
+    "crackedPot": {
+      "numberHeld": 3,
+      "chosen": false
+    },
+    "stoneswordKey": {
+      "numberHeld": 2,
+      "chosen": false
+    },
+    "bewitchingBranch": {
+      "numberHeld": 5,
+      "chosen": false
+    },
+    "boiledPrawn": {
+      "numberHeld": 5,
+      "chosen": false
+    },
+    "shabririsWoe": {
+      "numberHeld": 1,
+      "chosen": false
+    }
+  },
   "stats": {
     "level": 1,
     "runesHeld": 0,
