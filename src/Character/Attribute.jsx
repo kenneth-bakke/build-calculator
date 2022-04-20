@@ -3,26 +3,36 @@ import { capitalize } from '../utils/utils';
 
 export default function Attribute({ attribute, value }) {
   const [editAttribute, setEditAttribute] = useState(false);
+  const [val, setVal] = useState(value);
 
   const renderAttribute = () => {
-    toggleEditAttribute();
     return (
-      <div>
-        {capitalize(attribute)}: {value}
+      <div onClick={toggleEditAttribute}>
+        {capitalize(attribute)}: {val}
       </div>
     );
   };
 
   const renderAttributeForm = () => {
     return (
-      <div>
-        <input type='number'></input>
-        <input type='submit' onSubmit={updateAttribute} />
-      </div>
+      <form onSubmit={updateAttribute}>
+        <span>{capitalize(attribute)}</span>
+        <input type='number' min={val} value={val} onChange={setAttribute} />
+        <input type='submit' />
+      </form>
     );
   };
 
-  const updateAttribute = (e) => {};
+  const updateAttribute = (e) => {
+    e.preventDefault();
+    toggleEditAttribute();
+  };
+
+  const setAttribute = (e) => {
+    e.preventDefault();
+    const newAttributeValue = e.target.value;
+    setVal(newAttributeValue);
+  };
 
   const toggleEditAttribute = () => {
     setEditAttribute(!editAttribute);
