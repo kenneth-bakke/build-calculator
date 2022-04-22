@@ -1,29 +1,72 @@
-import React, { useState } from 'react';
+import sha256 from 'crypto-js/sha256';
+import React, { useEffect, useState } from 'react';
 import Attribute from './Attribute';
-import baseCharacter from '../static/baseCharacter.json';
-import { capitalize } from '../utils/utils';
 import CharacterContext from './CharacterContext';
+import baseCharacter from '../static/baseCharacter.json';
+import classes from '../static/classes.json';
+import { capitalize } from '../utils/utils';
 
 export default function Character() {
+  const startingStatSum = Object.values(baseCharacter.stats.attributes).reduce(
+    (a, b) => a + b
+  );
   const [name, setName] = useState(baseCharacter.name);
   const [characterClass, setCharacterClass] = useState(baseCharacter.class);
   const [level, setLevel] = useState(baseCharacter.stats.level);
-  const [statSum, setStatSum] = useState(80);
   const [runesHeld, setRunesHeld] = useState(baseCharacter.stats.runesHeld);
   const [runesNeeded, setRunesNeeded] = useState(
     baseCharacter.stats.runesNeededForOneLevel
   );
   const [attributes, setAttributes] = useState(baseCharacter.stats.attributes);
+  const [editMode, setEditMode] = useState(false);
+  const [statSum, setStatSum] = useState(startingStatSum);
 
   const renderCharacter = () => {
     const attributeList = renderAttributes();
     return (
+      <div onClick={toggleEditMode}>
+        <div title='name'>Character Name: {capitalize(name)}</div>
+        <div title='characterClass'>Class: {capitalize(characterClass)}</div>
+        <div title='level'>Level: {level}</div>
+        <div title='runesHeld'>Runes Held: {runesHeld}</div>
+        <div title='runesNeeded'>Runes Needed: {runesNeeded}</div>
+        {attributeList}
+      </div>
+    );
+  };
+
+  const renderCharacterForm = () => {
+    const attributeList = renderAttributes();
+    return (
       <div>
-        <div>Character Name: {capitalize(name)}</div>
-        <div>Class: {capitalize(characterClass)}</div>
-        <div>Level: {level}</div>
-        <div>Runes Held: {runesHeld}</div>
-        <div>Runes Needed: {runesNeeded}</div>
+        <form onSubmit={toggleEditMode}>
+          <div>Character Name: </div>
+          <input onChange={updateCategory} value={name} title='name'></input>
+          <div>Class: </div>
+          <select
+            onChange={updateClass}
+            value={characterClass}
+            title='characterClass'
+            name='characterClass'
+          >
+            {renderClassOptions()}
+          </select>
+          <div>Level: </div>
+          <input onChange={updateCategory} value={level} title='level'></input>
+          <div>Runes Held: </div>
+          <input
+            onChange={updateCategory}
+            value={runesHeld}
+            title='runesHeld'
+          ></input>
+          <div>Runes Needed: </div>
+          <input
+            onChange={updateCategory}
+            value={runesNeeded}
+            title='runesNeeded'
+          ></input>
+          <input type='submit' />
+        </form>
         {attributeList}
       </div>
     );
@@ -43,10 +86,43 @@ export default function Character() {
     return attributeList;
   };
 
+  const renderClassOptions = () => {
+    const classList = [];
+    const classNames = Object.keys(classes);
+    for (let cName of classNames) {
+      classList.push(<option key={sha256(cName)}>{capitalize(cName)}</option>);
+    }
+
+    return classList;
+  };
+
+  const toggleEditMode = () => {
+    setEditMode(!editMode);
+  };
+
+  const updateClass = (e) => {
+    const newClassType = e.target.value;
+    const classStats = classes[newClassType.toLowerCase()];
+    const newAttributes = classStats.stats.attributes;
+    const updatedAttributes = {};
+
+    for (let attr in newAttributes) {
+      updatedAttributes[attr] = newAttributes[attr];
+    }
+
+    setCharacterClass(newClassType);
+    setLevel(classStats.stats.level);
+    setAttributes(updatedAttributes);
+  };
+
+  const updateCategory = (e) => {
+    return;
+  };
+
   return (
     <div>
-      <CharacterContext.Provider value={[statSum, setStatSum, level, setLevel]}>
-        <div>{renderCharacter()}</div>
+      <CharacterContext.Provider value={[level, setLevel]}>
+        <div>{editMode ? renderCharacterForm() : renderCharacter()}</div>
       </CharacterContext.Provider>
     </div>
   );

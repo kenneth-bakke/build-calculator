@@ -5,7 +5,8 @@ import CharacterContext from './CharacterContext';
 export default function Attribute({ attribute, value }) {
   const [editAttribute, setEditAttribute] = useState(false);
   const [val, setVal] = useState(value);
-  const [level, setLevel, statSum, setStatSum] = useContext(CharacterContext);
+  const [nextVal, setNextVal] = useState(val);
+  const [level, setLevel] = useContext(CharacterContext);
 
   const renderAttribute = () => {
     return (
@@ -23,7 +24,7 @@ export default function Attribute({ attribute, value }) {
           type='number'
           min={value}
           max={99}
-          value={val}
+          value={nextVal}
           onChange={setAttribute}
         />
         <input type='submit' />
@@ -33,14 +34,19 @@ export default function Attribute({ attribute, value }) {
 
   const updateAttribute = (e) => {
     e.preventDefault();
+    const diff = nextVal - val;
+    const nextLevel = level + diff;
+    console.log(nextLevel);
+    setVal(nextVal);
+    setLevel(nextLevel);
+
     toggleEditAttribute();
   };
 
   const setAttribute = (e) => {
     e.preventDefault();
     const newAttributeValue = e.target.value;
-    setVal(newAttributeValue);
-    setLevel();
+    setNextVal(Number(newAttributeValue));
   };
 
   const toggleEditAttribute = () => {
