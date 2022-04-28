@@ -24,14 +24,16 @@ export default function Character() {
   const renderCharacter = () => {
     const attributeList = renderAttributes();
     return (
-      <div onClick={toggleEditMode}>
-        <div title='name'>Character Name: {capitalize(name)}</div>
-        <div title='characterClass'>Class: {capitalize(characterClass)}</div>
-        <div title='level'>Level: {level}</div>
-        <div title='runesHeld'>Runes Held: {runesHeld}</div>
-        <div title='runesNeeded'>Runes Needed: {runesNeeded}</div>
+      <>
+        <div onClick={toggleEditMode}>
+          <div title='name'>Character Name: {capitalize(name)}</div>
+          <div title='characterClass'>Class: {capitalize(characterClass)}</div>
+          <div title='level'>Level: {level}</div>
+          <div title='runesHeld'>Runes Held: {runesHeld}</div>
+          <div title='runesNeeded'>Runes Needed: {runesNeeded}</div>
+        </div>
         {attributeList}
-      </div>
+      </>
     );
   };
 
@@ -116,6 +118,10 @@ export default function Character() {
   };
 
   const updateCategory = (e) => {
+    const category = e.target.title;
+    const newCategoryValue = e.target.value;
+
+    console.log(category, newCategoryValue);
     return;
   };
 

@@ -4,14 +4,14 @@ import CharacterContext from './CharacterContext';
 
 export default function Attribute({ attribute, value }) {
   const [editAttribute, setEditAttribute] = useState(false);
-  const [val, setVal] = useState(value);
-  const [nextVal, setNextVal] = useState(val);
+  const [attributeValue, setAttributeValue] = useState(value);
+  const [nextAttributeValue, setNextAttributeValue] = useState(attributeValue);
   const [level, setLevel] = useContext(CharacterContext);
 
   const renderAttribute = () => {
     return (
       <div onClick={toggleEditAttribute}>
-        {capitalize(attribute)}: {val}
+        {capitalize(attribute)}: {attributeValue}
       </div>
     );
   };
@@ -24,7 +24,7 @@ export default function Attribute({ attribute, value }) {
           type='number'
           min={value}
           max={99}
-          value={nextVal}
+          value={nextAttributeValue}
           onChange={setAttribute}
         />
         <input type='submit' />
@@ -34,11 +34,11 @@ export default function Attribute({ attribute, value }) {
 
   const updateAttribute = (e) => {
     e.preventDefault();
-    const diff = nextVal - val;
+    const diff = nextAttributeValue - attributeValue;
     const nextLevel = level + diff;
-    console.log(nextLevel);
-    setVal(nextVal);
+
     setLevel(nextLevel);
+    setAttributeValue(nextAttributeValue);
 
     toggleEditAttribute();
   };
@@ -46,7 +46,7 @@ export default function Attribute({ attribute, value }) {
   const setAttribute = (e) => {
     e.preventDefault();
     const newAttributeValue = e.target.value;
-    setNextVal(Number(newAttributeValue));
+    setNextAttributeValue(newAttributeValue);
   };
 
   const toggleEditAttribute = () => {
