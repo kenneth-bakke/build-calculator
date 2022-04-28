@@ -89,13 +89,7 @@ export default function Character() {
   };
 
   const renderClassOptions = () => {
-    // const classList = [];
     const classNames = Object.keys(classes);
-    // for (let className of classNames) {
-    //   classList.push(<option key={sha256(className)}>{capitalize(className)}</option>);
-    // }
-
-    // return classList;
     const classList = classNames.map((className) => (
       <option key={sha256(className)}>{capitalize(className)}</option>
     ));
@@ -109,16 +103,11 @@ export default function Character() {
   const updateClass = (e) => {
     const newClassType = e.target.value;
     const classStats = classes[newClassType.toLowerCase()];
-    const newAttributes = classStats.stats.attributes;
-    const updatedAttributes = {};
-
-    for (let attr in newAttributes) {
-      updatedAttributes[attr] = newAttributes[attr];
-    }
+    const classAttributes = { ...classStats?.stats?.attributes };
 
     setCharacterClass(newClassType);
     setLevel(classStats.stats.level);
-    setAttributes(updatedAttributes);
+    setAttributes(classAttributes);
   };
 
   const updateCategory = (e) => {
