@@ -89,12 +89,16 @@ export default function Character() {
   };
 
   const renderClassOptions = () => {
-    const classList = [];
+    // const classList = [];
     const classNames = Object.keys(classes);
-    for (let cName of classNames) {
-      classList.push(<option key={sha256(cName)}>{capitalize(cName)}</option>);
-    }
+    // for (let className of classNames) {
+    //   classList.push(<option key={sha256(className)}>{capitalize(className)}</option>);
+    // }
 
+    // return classList;
+    const classList = classNames.map((className) => (
+      <option key={sha256(className)}>{capitalize(className)}</option>
+    ));
     return classList;
   };
 
