@@ -4,7 +4,7 @@ import Attribute from './Attribute';
 import CharacterContext from './CharacterContext';
 import baseCharacter from '../static/baseCharacter.json';
 import classes from '../static/classes.json';
-import { capitalize } from '../utils/utils';
+import { capitalize, calculateRunesNeeded } from '../utils/utils';
 
 export default function Character() {
   const startingStatSum = Object.values(baseCharacter.stats.attributes).reduce(
@@ -13,6 +13,7 @@ export default function Character() {
   const [name, setName] = useState(baseCharacter.name);
   const [characterClass, setCharacterClass] = useState(baseCharacter.class);
   const [level, setLevel] = useState(baseCharacter.stats.level);
+  const [previousLevel, setPreviousLevel] = useState(level);
   const [runesHeld, setRunesHeld] = useState(baseCharacter.stats.runesHeld);
   const [runesNeeded, setRunesNeeded] = useState(
     baseCharacter.stats.runesNeededForOneLevel
@@ -21,6 +22,22 @@ export default function Character() {
   const [editMode, setEditMode] = useState(false);
   const [statSum, setStatSum] = useState(startingStatSum);
 
+  useEffect(() => {
+    const clearId = setTimeout(() => {
+      const [cost, leftoverRunes] = calculateRunesNeeded(
+        level,
+        previousLevel,
+        runesHeld
+      );
+      setRunesNeeded(cost);
+      setRunesHeld(leftoverRunes);
+      setPreviousLevel(level);
+    }, 400);
+
+    return () => clearTimeout(clearId);
+  }, [level]);
+
+  // Renderers
   const renderCharacter = () => {
     const attributeList = renderAttributes();
     return (
@@ -96,6 +113,7 @@ export default function Character() {
     return classList;
   };
 
+  // State Modifiers
   const toggleEditMode = () => {
     setEditMode(!editMode);
   };
