@@ -7,35 +7,30 @@ import classes from '../static/classes.json';
 import { capitalize, calculateRunesNeeded } from '../utils/utils';
 
 export default function Character() {
-  const startingStatSum = Object.values(baseCharacter.stats.attributes).reduce(
-    (a, b) => a + b
-  );
   const [name, setName] = useState(baseCharacter.name);
-  const [characterClass, setCharacterClass] = useState(baseCharacter.class);
-  const [level, setLevel] = useState(baseCharacter.stats.level);
-  const [previousLevel, setPreviousLevel] = useState(level);
-  const [runesHeld, setRunesHeld] = useState(baseCharacter.stats.runesHeld);
-  const [runesNeeded, setRunesNeeded] = useState(
-    baseCharacter.stats.runesNeededForOneLevel
+  const [characterClass, setCharacterClass] = useState(
+    baseCharacter.characterClass
   );
+  const [level, setLevel] = useState(baseCharacter.stats.level);
+  const [nextLevel, setNextLevel] = useState(level + 1);
+  const [runesHeld, setRunesHeld] = useState(baseCharacter.stats.runesHeld);
+  const [runesNeeded, setRunesNeeded] = useState(0);
   const [attributes, setAttributes] = useState(baseCharacter.stats.attributes);
   const [editMode, setEditMode] = useState(false);
-  const [statSum, setStatSum] = useState(startingStatSum);
 
   useEffect(() => {
     const clearId = setTimeout(() => {
       const [cost, leftoverRunes] = calculateRunesNeeded(
         level,
-        previousLevel,
+        nextLevel,
         runesHeld
       );
       setRunesNeeded(cost);
       setRunesHeld(leftoverRunes);
-      setPreviousLevel(level);
     }, 400);
 
     return () => clearTimeout(clearId);
-  }, [level]);
+  }, [level, nextLevel, runesHeld]);
 
   // Renderers
   const renderCharacter = () => {
@@ -47,7 +42,11 @@ export default function Character() {
           <div title='characterClass'>Class: {capitalize(characterClass)}</div>
           <div title='level'>Level: {level}</div>
           <div title='runesHeld'>Runes Held: {runesHeld}</div>
-          <div title='runesNeeded'>Runes Needed: {runesNeeded}</div>
+          <div title='nextLevel'>Next Level: {nextLevel}</div>
+        </div>
+        <div title='runesNeeded'>
+          Runes needed to level up {nextLevel - level} times:{' '}
+          <h3>{runesNeeded}</h3>
         </div>
         {attributeList}
       </>
@@ -70,19 +69,13 @@ export default function Character() {
           >
             {renderClassOptions()}
           </select>
-          <div>Level: </div>
+          <div>Current Level: </div>
           <input onChange={updateCategory} value={level} title='level'></input>
           <div>Runes Held: </div>
           <input
             onChange={updateCategory}
             value={runesHeld}
             title='runesHeld'
-          ></input>
-          <div>Runes Needed: </div>
-          <input
-            onChange={updateCategory}
-            value={runesNeeded}
-            title='runesNeeded'
           ></input>
           <input type='submit' />
         </form>
@@ -125,6 +118,7 @@ export default function Character() {
 
     setCharacterClass(newClassType);
     setLevel(classStats.stats.level);
+    setNextLevel(classStats.stats.level + 1);
     setAttributes(classAttributes);
   };
 
@@ -132,15 +126,64 @@ export default function Character() {
     const category = e.target.title;
     const newCategoryValue = e.target.value;
 
-    console.log(category, newCategoryValue);
-    return;
+    switch (category) {
+      case 'name':
+        setName(newCategoryValue);
+        break;
+      case 'level':
+        setLevel(newCategoryValue);
+        break;
+      case 'runesHeld':
+        setRunesHeld(newCategoryValue);
+        break;
+      default:
+        setCharacterClass(characterClass);
+        break;
+    }
+  };
+
+  const updateCharacter = (e) => {
+    e.preventDefault();
+
+    setLevel(nextLevel);
+    setNextLevel(level + 1);
+    const character = {
+      name: name,
+      characterClass: characterClass,
+      stats: {
+        level: level,
+        runesHeld: runesHeld,
+        runesNeededForOneLevel: runesNeeded,
+        attributes: attributes,
+      },
+    };
+
+    saveCharacter(character);
+  };
+
+  const saveCharacter = async (characterData) => {
+    console.log(characterData);
+    try {
+      const response = await fetch('CHARACTER_DB_URL_HERE', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(characterData),
+      });
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
   return (
     <div>
-      <CharacterContext.Provider value={[level, setLevel]}>
+      <CharacterContext.Provider
+        value={[level, nextLevel, setLevel, setNextLevel]}
+      >
         <div>{editMode ? renderCharacterForm() : renderCharacter()}</div>
       </CharacterContext.Provider>
+      {/* <input type='submit' value='Save Build' onSubmit={updateCharacter} /> */}
     </div>
   );
 }

@@ -1,6 +1,6 @@
 {
   "name": "Bingosa",
-  "class": "wretch",
+  "characterClass": "wretch",
   "keepsake": {
     "crimsonAmberMedallion": {
       "numberHeld": 1,

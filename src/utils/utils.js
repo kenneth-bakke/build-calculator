@@ -18,10 +18,8 @@ export function calculateRunesNeededForOneLevel(level) {
 }
 
 export function calculateRunesNeeded(level, desiredLevel, runesHeld = 0) {
-  if (desiredLevel <= level) {
-    throw new Error(
-      'input desiredLevel cannot be less than or equal to current level'
-    );
+  if (desiredLevel < level) {
+    throw new Error('input desiredLevel cannot be less than current level');
   }
 
   if (level < 1) {

@@ -61,6 +61,7 @@ describe('Rune calculation for multiple levels', () => {
     expect(calculateRunesNeeded(5, 6, 700)).toEqual([40, 0]);
     expect(calculateRunesNeeded(11, 12, 800)).toEqual([47, 0]);
     expect(calculateRunesNeeded(20, 21, 2000)).toEqual([857, 0]);
+    expect(calculateRunesNeeded(1, 2, 73)).toEqual([600, 0]);
     expect(calculateRunesNeeded(500, 501, 3330000)).toEqual([5103, 0]);
   });
 
