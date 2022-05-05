@@ -53,7 +53,12 @@ export default function Character() {
       <div>
         <form onSubmit={toggleEditMode}>
           <div>Character Name: </div>
-          <input onChange={updateCategory} value={name} title='name'></input>
+          <input
+            onClick={handleFocus}
+            onChange={updateCategory}
+            value={name}
+            title='name'
+          ></input>
           <div>Class: </div>
           <select
             onChange={updateClass}
@@ -64,9 +69,15 @@ export default function Character() {
             {renderClassOptions()}
           </select>
           <div>Current Level: </div>
-          <input onChange={updateCategory} value={level} title='level'></input>
+          <input
+            onClick={handleFocus}
+            onChange={updateCategory}
+            value={level}
+            title='level'
+          ></input>
           <div>Runes Held: </div>
           <input
+            onClick={handleFocus}
             onChange={updateCategory}
             value={runesHeld}
             title='runesHeld'
@@ -128,7 +139,9 @@ export default function Character() {
         newCategoryValue = Number(newCategoryValue);
         setLevel(newCategoryValue);
         setNextLevel(newCategoryValue + 1);
-        updateRunes(newCategoryValue, newCategoryValue + 1, runesHeld);
+        if (newCategoryValue >= 1) {
+          updateRunes(newCategoryValue, newCategoryValue + 1, runesHeld);
+        }
         break;
       case 'runesHeld':
         setRunesHeld(newCategoryValue);
@@ -166,6 +179,10 @@ export default function Character() {
     );
     setRunesNeeded(cost);
     setRunesHeld(leftoverRunes);
+  };
+
+  const handleFocus = (e) => {
+    e.target.select();
   };
 
   // TODO
