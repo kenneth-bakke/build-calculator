@@ -20,13 +20,7 @@ export default function Character() {
 
   useEffect(() => {
     const clearId = setTimeout(() => {
-      const [cost, leftoverRunes] = calculateRunesNeeded(
-        level,
-        nextLevel,
-        runesHeld
-      );
-      setRunesNeeded(cost);
-      setRunesHeld(leftoverRunes);
+      updateRunes(level, nextLevel, runesHeld);
     }, 400);
 
     return () => clearTimeout(clearId);
@@ -124,14 +118,17 @@ export default function Character() {
 
   const updateCategory = (e) => {
     const category = e.target.title;
-    const newCategoryValue = e.target.value;
+    let newCategoryValue = e.target.value;
 
     switch (category) {
       case 'name':
         setName(newCategoryValue);
         break;
       case 'level':
+        newCategoryValue = Number(newCategoryValue);
         setLevel(newCategoryValue);
+        setNextLevel(newCategoryValue + 1);
+        updateRunes(newCategoryValue, newCategoryValue + 1, runesHeld);
         break;
       case 'runesHeld':
         setRunesHeld(newCategoryValue);
@@ -161,6 +158,17 @@ export default function Character() {
     saveCharacter(character);
   };
 
+  const updateRunes = (currentLevel, desiredLevel, runes) => {
+    const [cost, leftoverRunes] = calculateRunesNeeded(
+      currentLevel,
+      desiredLevel,
+      runes
+    );
+    setRunesNeeded(cost);
+    setRunesHeld(leftoverRunes);
+  };
+
+  // TODO
   const saveCharacter = async (characterData) => {
     console.log(characterData);
     try {
@@ -171,6 +179,9 @@ export default function Character() {
         },
         body: JSON.stringify(characterData),
       });
+      if (response) {
+        alert('Character saved!');
+      }
     } catch (error) {
       console.error(error.message);
     }
