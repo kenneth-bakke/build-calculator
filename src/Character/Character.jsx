@@ -4,7 +4,7 @@ import Attribute from './Attribute';
 import CharacterContext from './CharacterContext';
 import baseCharacter from '../static/baseCharacter.json';
 import classes from '../static/classes.json';
-import { capitalize, calculateRunesNeeded } from '../utils/utils';
+import { capitalize, calculateRunesNeeded, handleFocus } from '../utils/utils';
 
 export default function Character() {
   const [name, setName] = useState(baseCharacter.name);
@@ -152,11 +152,23 @@ export default function Character() {
     }
   };
 
+  const updateRunes = (currentLevel, desiredLevel, runes) => {
+    const [cost, leftoverRunes] = calculateRunesNeeded(
+      currentLevel,
+      desiredLevel,
+      runes
+    );
+    setRunesNeeded(cost);
+    setRunesHeld(leftoverRunes);
+  };
+
   const updateCharacter = (e) => {
     e.preventDefault();
 
+    console.log(e.target.value);
     setLevel(nextLevel);
-    setNextLevel(level + 1);
+    setNextLevel(nextLevel + 1);
+    updateRunes(nextLevel, nextLevel + 1, runesHeld);
     const character = {
       name: name,
       characterClass: characterClass,
@@ -168,24 +180,18 @@ export default function Character() {
       },
     };
 
-    saveCharacter(character);
+    // saveCharacter(character);
   };
 
-  const updateRunes = (currentLevel, desiredLevel, runes) => {
-    const [cost, leftoverRunes] = calculateRunesNeeded(
-      currentLevel,
-      desiredLevel,
-      runes
-    );
-    setRunesNeeded(cost);
-    setRunesHeld(leftoverRunes);
+  const confirmChoice = (e) => {
+    e.preventDefault();
+
+    if (window.confirm('Save this character? Runes needed will reset.')) {
+      updateCharacter(e);
+    }
   };
 
-  const handleFocus = (e) => {
-    e.target.select();
-  };
-
-  // TODO
+  // TODO: Build server/db that saves each character
   const saveCharacter = async (characterData) => {
     console.log(characterData);
     try {
@@ -211,7 +217,9 @@ export default function Character() {
       >
         <div>{editMode ? renderCharacterForm() : renderCharacter()}</div>
       </CharacterContext.Provider>
-      {/* <input type='submit' value='Save Build' onSubmit={updateCharacter} /> */}
+      <form onSubmit={confirmChoice}>
+        <input type='submit' value='Save Build' />
+      </form>
     </div>
   );
 }

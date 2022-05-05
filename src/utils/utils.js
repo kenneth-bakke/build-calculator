@@ -44,3 +44,7 @@ export function calculateRunesNeeded(level, desiredLevel, runesHeld = 0) {
     return [0, runesHeld];
   }
 }
+
+export function handleFocus(e) {
+  e.target.select();
+}
