@@ -38,6 +38,7 @@ export default function Attribute({ attribute, value }) {
     e.preventDefault();
 
     if (nextAttributeValue !== attributeValue) {
+      setLevel(nextLevel);
       setNextLevel(nextLevel + 1);
       setAttributeValue(nextAttributeValue);
     }

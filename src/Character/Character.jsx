@@ -4,7 +4,12 @@ import Attribute from './Attribute';
 import CharacterContext from './CharacterContext';
 import baseCharacter from '../static/baseCharacter.json';
 import classes from '../static/classes.json';
-import { capitalize, calculateRunesNeeded, handleFocus } from '../utils/utils';
+import {
+  capitalize,
+  calculateRunesNeeded,
+  handleFocus,
+  convertIntegerToHumanReadable,
+} from '../utils/utils';
 
 export default function Character() {
   const [name, setName] = useState(baseCharacter.name);
@@ -12,6 +17,7 @@ export default function Character() {
     baseCharacter.characterClass
   );
   const [level, setLevel] = useState(baseCharacter.stats.level);
+  const [baseLevel, setBaseLevel] = useState(level);
   const [nextLevel, setNextLevel] = useState(level + 1);
   const [runesHeld, setRunesHeld] = useState(baseCharacter.stats.runesHeld);
   const [runesNeeded, setRunesNeeded] = useState(0);
@@ -20,11 +26,11 @@ export default function Character() {
 
   useEffect(() => {
     const clearId = setTimeout(() => {
-      updateRunes(level, nextLevel, runesHeld);
+      updateRunes(baseLevel, level, runesHeld);
     }, 400);
 
     return () => clearTimeout(clearId);
-  }, [level, nextLevel, runesHeld]);
+  }, [nextLevel, runesHeld]);
 
   // Renderers
   const renderCharacter = () => {
@@ -34,13 +40,15 @@ export default function Character() {
         <div onClick={toggleEditMode}>
           <div title='name'>Character Name: {capitalize(name)}</div>
           <div title='characterClass'>Class: {capitalize(characterClass)}</div>
-          <div title='level'>Level: {level}</div>
+          <div title='level'>Level: {baseLevel}</div>
           <div title='runesHeld'>Runes Held: {runesHeld}</div>
-          <div title='nextLevel'>Next Level: {nextLevel}</div>
         </div>
-        <div title='runesNeeded'>
-          Runes needed to level up {nextLevel - level} times:{' '}
-          <h3>{runesNeeded}</h3>
+        <div>
+          Runes needed to reach level {level}:{' '}
+          <h1>{convertIntegerToHumanReadable(runesNeeded)}</h1>
+          <div title='nextLevel'>
+            Next Level: <h2>{nextLevel}</h2>
+          </div>
         </div>
         {attributeList}
       </>
@@ -167,6 +175,7 @@ export default function Character() {
 
     console.log(e.target.value);
     setLevel(nextLevel);
+    setBaseLevel(nextLevel);
     setNextLevel(nextLevel + 1);
     updateRunes(nextLevel, nextLevel + 1, runesHeld);
     const character = {

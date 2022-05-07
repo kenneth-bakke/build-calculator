@@ -1,7 +1,7 @@
 import {
   calculateRunesNeededForOneLevel,
   calculateRunesNeeded,
-  // humanReadable,
+  convertIntegerToHumanReadable,
 } from '../utils.js';
 
 describe('Rune calculation for one level', () => {
@@ -81,14 +81,22 @@ describe('Rune calculation for multiple levels', () => {
 
 describe('Human readable number', () => {
   it('Returns a stringified number', () => {
-    expect(humanReadable(10)).toBe('10');
+    const stringifiedNumber = convertIntegerToHumanReadable(10);
+    expect(stringifiedNumber).toBe('10');
+    expect(typeof stringifiedNumber).toBe('string');
   });
 
   it('Converts a number to human readable format', () => {
-    expect(humanReadable(1000)).toBe('1,000');
+    expect(convertIntegerToHumanReadable(1000)).toBe('1,000');
   });
 
   it('Converts a large number to human readable format', () => {
-    expect(humanReadable(1000000000)).toBe('1,000,000,000');
+    expect(convertIntegerToHumanReadable(1000000000)).toBe('1,000,000,000');
+  });
+
+  it("Converts a number with 10's of x places", () => {
+    expect(convertIntegerToHumanReadable(76543)).toBe('76,543');
+    expect(convertIntegerToHumanReadable(90123456)).toBe('90,123,456');
+    expect(convertIntegerToHumanReadable(10123456789)).toBe('10,123,456,789');
   });
 });
