@@ -28,24 +28,34 @@ export default function Dropdown() {
     switch (category) {
       case 'Helms':
         await getHelms();
+        break;
       case 'Chest Armor':
         await getChestArmor();
+        break;
       case 'Gauntlets':
         await getGauntlets();
+        break;
       case 'LegArmor':
         await getLegArmor();
+        break;
       case 'Weapons':
         await getWeapons();
+        break;
       case 'Shields':
         await getShields();
+        break;
       case 'Talismans':
         await getTalismans();
+        break;
       case 'Incantations':
         await getIncantations();
+        break;
       case 'Sorceries':
         await getSorceries();
+        break;
       default:
         await getWeapons();
+        break;
     }
   };
 
