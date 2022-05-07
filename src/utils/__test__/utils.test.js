@@ -1,6 +1,7 @@
 import {
   calculateRunesNeededForOneLevel,
   calculateRunesNeeded,
+  // humanReadable,
 } from '../utils.js';
 
 describe('Rune calculation for one level', () => {
@@ -75,5 +76,19 @@ describe('Rune calculation for multiple levels', () => {
   it('Throws error when trying to level down', () => {
     expect(() => calculateRunesNeeded(5, 4)).toThrow(Error);
     expect(() => calculateRunesNeeded('one', 'two')).toThrow(Error);
+  });
+});
+
+describe('Human readable number', () => {
+  it('Returns a stringified number', () => {
+    expect(humanReadable(10)).toBe('10');
+  });
+
+  it('Converts a number to human readable format', () => {
+    expect(humanReadable(1000)).toBe('1,000');
+  });
+
+  it('Converts a large number to human readable format', () => {
+    expect(humanReadable(1000000000)).toBe('1,000,000,000');
   });
 });

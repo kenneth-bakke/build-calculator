@@ -45,6 +45,18 @@ export function calculateRunesNeeded(level, desiredLevel, runesHeld = 0) {
   }
 }
 
+export function humanReadable(number) {
+  let readableNumber = '';
+
+  while (number > 0) {
+    const digit = number % 10;
+    readableNumber = digit + readableNumber;
+    number = number / 10;
+  }
+
+  return readableNumber;
+}
+
 export function handleFocus(e) {
   e.target.select();
 }
