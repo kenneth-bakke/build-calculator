@@ -20,6 +20,26 @@ export async function queryGraphQL(query) {
   }
 }
 
+export async function getHelms(limit = 10, page = 0) {
+  const query = `
+        query {
+          weapon(limit: ${limit}, page: ${page}) {
+            name
+          }
+        }
+    `;
+
+  const weapons = await queryGraphQL(query);
+}
+export async function getChestArmor() {}
+export async function getGauntlets() {}
+export async function getLegArmor() {}
+export async function getWeapons() {}
+export async function getShields() {}
+export async function getTalismans() {}
+export async function getIncantations() {}
+export async function getSorceries() {}
+
 export function capitalize(word) {
   if (typeof word !== 'string') {
     word = '' + word + '';
