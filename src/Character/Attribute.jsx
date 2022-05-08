@@ -6,7 +6,8 @@ export default function Attribute({ attribute, value }) {
   const [editAttribute, setEditAttribute] = useState(false);
   const [attributeValue, setAttributeValue] = useState(value);
   const [nextAttributeValue, setNextAttributeValue] = useState(attributeValue);
-  const [level, setLevel] = useContext(CharacterContext);
+  const [level, nextLevel, setLevel, setNextLevel] =
+    useContext(CharacterContext);
 
   const renderAttribute = () => {
     return (
@@ -34,11 +35,12 @@ export default function Attribute({ attribute, value }) {
 
   const updateAttribute = (e) => {
     e.preventDefault();
-    const diff = nextAttributeValue - attributeValue;
-    const nextLevel = level + diff;
 
-    setLevel(nextLevel);
-    setAttributeValue(nextAttributeValue);
+    if (nextAttributeValue !== attributeValue) {
+      setLevel(nextLevel);
+      setNextLevel(nextLevel + 1);
+      setAttributeValue(nextAttributeValue);
+    }
 
     toggleEditAttribute();
   };
@@ -46,7 +48,9 @@ export default function Attribute({ attribute, value }) {
   const setAttribute = (e) => {
     e.preventDefault();
     const newAttributeValue = e.target.value;
+    const diff = newAttributeValue - attributeValue;
     setNextAttributeValue(newAttributeValue);
+    setNextLevel(level + diff);
   };
 
   const toggleEditAttribute = () => {
