@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { queryGraphQL } from '../utils/utils';
 
 export default function SearchBar({
   itemCategories,
