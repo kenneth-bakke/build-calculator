@@ -11,34 +11,29 @@ export async function queryGraphQL(query) {
     },
   });
 
-  const text = await response.text();
+  const text = await response;
 
   try {
-    return JSON.parse(text);
+    return text;
   } catch (e) {
     console.error('Error parsing JSON', text);
   }
 }
 
-export async function getHelms(limit = 10, page = 0) {
-  const query = `
-        query {
-          weapon(limit: ${limit}, page: ${page}) {
-            name
-          }
-        }
-    `;
+export async function getListByCategory(category, limit = 10, page = 0) {
+  const query = `{
+    query {
+      ${category}(limit:${limit}, page:${page}) {
+        name,
+        description
+      }
+    }
+  }`;
 
-  const weapons = await queryGraphQL(query);
+  const response = await queryGraphQL(query);
+  const itemList = JSON.parse(JSON.stringify(response.body));
+  return itemList;
 }
-export async function getChestArmor() {}
-export async function getGauntlets() {}
-export async function getLegArmor() {}
-export async function getWeapons() {}
-export async function getShields() {}
-export async function getTalismans() {}
-export async function getIncantations() {}
-export async function getSorceries() {}
 
 export function capitalize(word) {
   if (typeof word !== 'string') {

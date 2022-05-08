@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { queryGraphQL } from '../utils/utils';
 
-export default function SearchBar({ showCategories, setShowCategories }) {
+export default function SearchBar({
+  itemCategories,
+  displayCategories,
+  setDisplayCategories,
+}) {
   const [queryTerm, setQueryTerm] = useState('');
 
   useEffect(() => {

@@ -2,7 +2,11 @@ import {
   calculateRunesNeededForOneLevel,
   calculateRunesNeeded,
   convertIntegerToHumanReadable,
+  queryGraphQL,
+  getHelms,
 } from '../utils.js';
+
+const fetch = require('jest-fetch-mock').enableMocks();
 
 describe('Rune calculation for one level', () => {
   it('Properly calculates runes needed for one level-up', () => {
@@ -98,5 +102,26 @@ describe('Human readable number', () => {
     expect(convertIntegerToHumanReadable(76543)).toBe('76,543');
     expect(convertIntegerToHumanReadable(90123456)).toBe('90,123,456');
     expect(convertIntegerToHumanReadable(10123456789)).toBe('10,123,456,789');
+  });
+});
+
+describe('GraphQL Query - Categories', () => {
+  const query = `
+    query {
+      helms {
+        name
+      }
+    }`;
+
+  it('Pings the Elden Ring API', async () => {
+    const response = await queryGraphQL(query);
+
+    expect(response).not.toBe('undefined');
+    expect(response.status).toBe(200);
+  });
+
+  it('Returns proper data based on query', async () => {
+    const response = await getHelms(10, 0);
+    console.log(response);
   });
 });
