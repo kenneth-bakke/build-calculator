@@ -9,5 +9,13 @@
     "Talismans",
     "Incantations",
     "Sorceries"
+  ],
+  "graphQLSyntaxForItemCategories": [
+    "weapon",
+    "shield",
+    "armor",
+    "sorcery",
+    "incantation",
+    "talisman"
   ]
 }

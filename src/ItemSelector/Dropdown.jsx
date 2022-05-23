@@ -18,14 +18,10 @@ export default function Dropdown() {
     return () => clearTimeout(clearId);
   }, [displayCategories]);
 
-  const toggleDropdown = (e) => {
-    setOpen(!open);
-  };
-
   const getCategoryList = async (e) => {
     const category = e.target.value;
-    const categoryList = await getListByCategory(category, 10, 0);
-    console.log(categoryList);
+    const categoryList = await getListByCategory('armor', 10, 0);
+
     setItemList(categoryList);
   };
 
@@ -37,14 +33,5 @@ export default function Dropdown() {
     return <select onChange={getCategoryList}>{categoryList}</select>;
   };
 
-  return (
-    <div onSelect={toggleDropdown}>
-      <SearchBar
-        itemCategories={itemCategories}
-        setDisplayCategories={setDisplayCategories}
-        displayCategories={displayCategories}
-      />
-      <div>{open ? renderCategories() : null}</div>
-    </div>
-  );
+  return <div>{renderCategories()}</div>;
 }

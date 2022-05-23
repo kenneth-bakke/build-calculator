@@ -1,38 +1,19 @@
-export async function queryGraphQL(query) {
-  const response = await fetch('https://eldenring.fanapis.com/api/graphql', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-      'User-Agent': 'elden-ring-build-calculator/0.0.1',
-    },
-    body: {
-      query,
-    },
-  });
-
-  const text = await response;
-
-  try {
-    return text;
-  } catch (e) {
-    console.error('Error parsing JSON', text);
-  }
-}
+import { queryGraphQL } from './graphqlClient';
 
 export async function getListByCategory(category, limit = 10, page = 0) {
-  const query = `{
-    query {
-      ${category}(limit:${limit}, page:${page}) {
-        name,
-        description
-      }
-    }
-  }`;
+  const query = `query: query {
+                  armor(limit=10, page=0) {
+                    name,
+                    description
+                  }
+                }`;
 
-  const response = await queryGraphQL(query);
-  const itemList = JSON.parse(JSON.stringify(response.body));
-  return itemList;
+  try {
+    const itemList = await queryGraphQL(query);
+    return itemList;
+  } catch (e) {
+    // do nothing we want to swallow the error
+  }
 }
 
 export function capitalize(word) {

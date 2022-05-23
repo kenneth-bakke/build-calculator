@@ -2,9 +2,9 @@ import {
   calculateRunesNeededForOneLevel,
   calculateRunesNeeded,
   convertIntegerToHumanReadable,
-  queryGraphQL,
-  getHelms,
 } from '../utils.js';
+import { graphQLSyntaxForItemCategories } from '../../static/itemCategories.json';
+import { queryGraphQL } from '../graphqlClient.js';
 
 const fetch = require('jest-fetch-mock').enableMocks();
 
@@ -108,20 +108,34 @@ describe('Human readable number', () => {
 describe('GraphQL Query - Categories', () => {
   const query = `
     query {
-      helms {
-        name
-      }
+      weapon(limit: 10, page:0){
+        name,
+        category
+      },
     }`;
 
   it('Pings the Elden Ring API', async () => {
     const response = await queryGraphQL(query);
-
     expect(response).not.toBe('undefined');
     expect(response.status).toBe(200);
   });
 
-  it('Returns proper data based on query', async () => {
-    const response = await getHelms(10, 0);
-    console.log(response);
-  });
+  // it('Gets actual data from the ERAPI', async () => {
+  //   const response = await queryGraphQL(query);
+  //   const weapons = JSON.stringify(response.body);
+  //   console.log(weapons);
+  // });
 });
+
+// describe('getListByCategory', () => {
+//   it('Properly retrieves data from graphQL query function', async () => {
+//     const response = await getListByCategory('Helms');
+//     try {
+//       const items = await JSON.parse(JSON.stringify(response));
+//       expect(items).not.toBe('undefined');
+//       expect(items.status).toBe(200);
+//     } catch(e) {
+//       console.log(e.message);
+//     }
+//   });
+// });
