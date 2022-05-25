@@ -4,7 +4,12 @@ import Attribute from './Attribute';
 import CharacterContext from './CharacterContext';
 import baseCharacter from '../static/baseCharacter.json';
 import classes from '../static/classes.json';
-import { capitalize, calculateRunesNeeded } from '../utils/utils';
+import {
+  capitalize,
+  calculateRunesNeeded,
+  handleFocus,
+  convertIntegerToHumanReadable,
+} from '../utils/utils';
 
 export default function Character() {
   const [name, setName] = useState(baseCharacter.name);
@@ -12,6 +17,7 @@ export default function Character() {
     baseCharacter.characterClass
   );
   const [level, setLevel] = useState(baseCharacter.stats.level);
+  const [baseLevel, setBaseLevel] = useState(level);
   const [nextLevel, setNextLevel] = useState(level + 1);
   const [runesHeld, setRunesHeld] = useState(baseCharacter.stats.runesHeld);
   const [runesNeeded, setRunesNeeded] = useState(0);
@@ -20,17 +26,11 @@ export default function Character() {
 
   useEffect(() => {
     const clearId = setTimeout(() => {
-      const [cost, leftoverRunes] = calculateRunesNeeded(
-        level,
-        nextLevel,
-        runesHeld
-      );
-      setRunesNeeded(cost);
-      setRunesHeld(leftoverRunes);
+      updateRunes(baseLevel, level, runesHeld);
     }, 400);
 
     return () => clearTimeout(clearId);
-  }, [level, nextLevel, runesHeld]);
+  }, [nextLevel, runesHeld]);
 
   // Renderers
   const renderCharacter = () => {
@@ -40,13 +40,15 @@ export default function Character() {
         <div onClick={toggleEditMode}>
           <div title='name'>Character Name: {capitalize(name)}</div>
           <div title='characterClass'>Class: {capitalize(characterClass)}</div>
-          <div title='level'>Level: {level}</div>
+          <div title='level'>Level: {baseLevel}</div>
           <div title='runesHeld'>Runes Held: {runesHeld}</div>
-          <div title='nextLevel'>Next Level: {nextLevel}</div>
         </div>
-        <div title='runesNeeded'>
-          Runes needed to level up {nextLevel - level} times:{' '}
-          <h3>{runesNeeded}</h3>
+        <div>
+          Runes needed to reach level {level}:{' '}
+          <h1>{convertIntegerToHumanReadable(runesNeeded)}</h1>
+          <div title='nextLevel'>
+            Next Level: <h2>{nextLevel}</h2>
+          </div>
         </div>
         {attributeList}
       </>
@@ -59,7 +61,12 @@ export default function Character() {
       <div>
         <form onSubmit={toggleEditMode}>
           <div>Character Name: </div>
-          <input onChange={updateCategory} value={name} title='name'></input>
+          <input
+            onClick={handleFocus}
+            onChange={updateCategory}
+            value={name}
+            title='name'
+          ></input>
           <div>Class: </div>
           <select
             onChange={updateClass}
@@ -70,9 +77,15 @@ export default function Character() {
             {renderClassOptions()}
           </select>
           <div>Current Level: </div>
-          <input onChange={updateCategory} value={level} title='level'></input>
+          <input
+            onClick={handleFocus}
+            onChange={updateCategory}
+            value={level}
+            title='level'
+          ></input>
           <div>Runes Held: </div>
           <input
+            onClick={handleFocus}
             onChange={updateCategory}
             value={runesHeld}
             title='runesHeld'
@@ -124,14 +137,19 @@ export default function Character() {
 
   const updateCategory = (e) => {
     const category = e.target.title;
-    const newCategoryValue = e.target.value;
+    let newCategoryValue = e.target.value;
 
     switch (category) {
       case 'name':
         setName(newCategoryValue);
         break;
       case 'level':
+        newCategoryValue = Number(newCategoryValue);
         setLevel(newCategoryValue);
+        setNextLevel(newCategoryValue + 1);
+        if (newCategoryValue >= 1) {
+          updateRunes(newCategoryValue, newCategoryValue + 1, runesHeld);
+        }
         break;
       case 'runesHeld':
         setRunesHeld(newCategoryValue);
@@ -142,11 +160,24 @@ export default function Character() {
     }
   };
 
+  const updateRunes = (currentLevel, desiredLevel, runes) => {
+    const [cost, leftoverRunes] = calculateRunesNeeded(
+      currentLevel,
+      desiredLevel,
+      runes
+    );
+    setRunesNeeded(cost);
+    setRunesHeld(leftoverRunes);
+  };
+
   const updateCharacter = (e) => {
     e.preventDefault();
 
+    console.log(e.target.value);
     setLevel(nextLevel);
-    setNextLevel(level + 1);
+    setBaseLevel(nextLevel);
+    setNextLevel(nextLevel + 1);
+    updateRunes(nextLevel, nextLevel + 1, runesHeld);
     const character = {
       name: name,
       characterClass: characterClass,
@@ -158,9 +189,18 @@ export default function Character() {
       },
     };
 
-    saveCharacter(character);
+    // saveCharacter(character);
   };
 
+  const confirmChoice = (e) => {
+    e.preventDefault();
+
+    if (window.confirm('Save this character? Runes needed will reset.')) {
+      updateCharacter(e);
+    }
+  };
+
+  // TODO: Build server/db that saves each character
   const saveCharacter = async (characterData) => {
     console.log(characterData);
     try {
@@ -171,6 +211,9 @@ export default function Character() {
         },
         body: JSON.stringify(characterData),
       });
+      if (response) {
+        alert('Character saved!');
+      }
     } catch (error) {
       console.error(error.message);
     }
@@ -183,7 +226,9 @@ export default function Character() {
       >
         <div>{editMode ? renderCharacterForm() : renderCharacter()}</div>
       </CharacterContext.Provider>
-      {/* <input type='submit' value='Save Build' onSubmit={updateCharacter} /> */}
+      <form onSubmit={confirmChoice}>
+        <input type='submit' value='Save Build' />
+      </form>
     </div>
   );
 }

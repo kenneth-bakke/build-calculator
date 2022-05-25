@@ -1,7 +1,12 @@
 import {
   calculateRunesNeededForOneLevel,
   calculateRunesNeeded,
+  convertIntegerToHumanReadable,
 } from '../utils.js';
+import { graphQLSyntaxForItemCategories } from '../../static/itemCategories.json';
+import { queryGraphQL } from '../graphqlClient.js';
+
+const fetch = require('jest-fetch-mock').enableMocks();
 
 describe('Rune calculation for one level', () => {
   it('Properly calculates runes needed for one level-up', () => {
@@ -77,3 +82,60 @@ describe('Rune calculation for multiple levels', () => {
     expect(() => calculateRunesNeeded('one', 'two')).toThrow(Error);
   });
 });
+
+describe('Human readable number', () => {
+  it('Returns a stringified number', () => {
+    const stringifiedNumber = convertIntegerToHumanReadable(10);
+    expect(stringifiedNumber).toBe('10');
+    expect(typeof stringifiedNumber).toBe('string');
+  });
+
+  it('Converts a number to human readable format', () => {
+    expect(convertIntegerToHumanReadable(1000)).toBe('1,000');
+  });
+
+  it('Converts a large number to human readable format', () => {
+    expect(convertIntegerToHumanReadable(1000000000)).toBe('1,000,000,000');
+  });
+
+  it("Converts a number with 10's of x places", () => {
+    expect(convertIntegerToHumanReadable(76543)).toBe('76,543');
+    expect(convertIntegerToHumanReadable(90123456)).toBe('90,123,456');
+    expect(convertIntegerToHumanReadable(10123456789)).toBe('10,123,456,789');
+  });
+});
+
+describe('GraphQL Query - Categories', () => {
+  const query = `
+    query {
+      weapon(limit: 10, page:0){
+        name,
+        category
+      },
+    }`;
+
+  it('Pings the Elden Ring API', async () => {
+    const response = await queryGraphQL(query);
+    expect(response).not.toBe('undefined');
+    expect(response.status).toBe(200);
+  });
+
+  // it('Gets actual data from the ERAPI', async () => {
+  //   const response = await queryGraphQL(query);
+  //   const weapons = JSON.stringify(response.body);
+  //   console.log(weapons);
+  // });
+});
+
+// describe('getListByCategory', () => {
+//   it('Properly retrieves data from graphQL query function', async () => {
+//     const response = await getListByCategory('Helms');
+//     try {
+//       const items = await JSON.parse(JSON.stringify(response));
+//       expect(items).not.toBe('undefined');
+//       expect(items.status).toBe(200);
+//     } catch(e) {
+//       console.log(e.message);
+//     }
+//   });
+// });

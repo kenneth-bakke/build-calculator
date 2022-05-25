@@ -1,3 +1,22 @@
+import { queryGraphQL } from './graphqlClient';
+
+export async function getListByCategory(category, limit = 10, page = 0) {
+  const query = `{
+    ${category}(limit: ${limit}, page:${page}) {
+      name,
+      category
+    }
+  }`;
+
+  try {
+    const itemList = await queryGraphQL(query);
+    console.log('Item list: ', itemList);
+    return itemList;
+  } catch (e) {
+    // do nothing we want to swallow the error
+  }
+}
+
 export function capitalize(word) {
   if (typeof word !== 'string') {
     word = '' + word + '';
@@ -43,4 +62,12 @@ export function calculateRunesNeeded(level, desiredLevel, runesHeld = 0) {
   } else {
     return [0, runesHeld];
   }
+}
+
+export function convertIntegerToHumanReadable(number) {
+  return number.toLocaleString('en-US');
+}
+
+export function handleFocus(e) {
+  e.target.select();
 }

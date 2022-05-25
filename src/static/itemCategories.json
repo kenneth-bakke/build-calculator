@@ -1,0 +1,10 @@
+{
+  "itemCategories": [
+    "weapon",
+    "shield",
+    "armor",
+    "sorcery",
+    "incantation",
+    "talisman"
+  ]
+}

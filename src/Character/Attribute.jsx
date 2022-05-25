@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { capitalize } from '../utils/utils';
+import { capitalize, handleFocus } from '../utils/utils';
 import CharacterContext from './CharacterContext';
 
 export default function Attribute({ attribute, value }) {
@@ -26,6 +26,7 @@ export default function Attribute({ attribute, value }) {
           min={value}
           max={99}
           value={nextAttributeValue}
+          onClick={handleFocus}
           onChange={setAttribute}
         />
         <input type='submit' />
