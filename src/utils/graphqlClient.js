@@ -29,16 +29,20 @@ function generateServerError(requestBody, shouldLogError) {
 }
 
 export async function queryGraphQL(query) {
-  const body = JSON.stringify(`query: ${query}`);
+  const body = JSON.stringify({ query });
+  const GRAPHQL_URL = 'https://eldenring.fanapis.com/api/graphql';
 
-  const response = await fetch('https://eldenring.fanapis.com/api/graphql', {
+  const response = await fetch(GRAPHQL_URL, {
     method: 'POST',
     headers: {
-      Accept: 'application/json',
       'Accept-Encoding': 'gzip, deflate, br',
       'Content-Type': 'application/json',
-      'User-Agent': 'elden-ring-build-calculator/0.0.1',
+      Accept: 'application/json',
+      Connection: 'keep-alive',
+      DNT: 1,
+      Origin: 'https://eldenring.fanapis.com',
     },
+    body,
   });
 
   const text = await response.text();
@@ -48,14 +52,14 @@ export async function queryGraphQL(query) {
     parsedJsonResponse = JSON.parse(text);
   } catch (e) {
     console.error('Error parsing JSON', text);
+  }
 
-    if (response.status === 400) {
-      throw generateBadRequestError(parsedJsonResponse, true);
-    }
+  if (response.status === 400) {
+    throw generateBadRequestError(parsedJsonResponse, true);
+  }
 
-    if (response.status === 500) {
-      throw generateServerError(body, true);
-    }
+  if (response.status === 500) {
+    throw generateServerError(body, true);
   }
 
   return parsedJsonResponse;

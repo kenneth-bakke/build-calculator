@@ -1,15 +1,16 @@
 import { queryGraphQL } from './graphqlClient';
 
 export async function getListByCategory(category, limit = 10, page = 0) {
-  const query = `query: query {
-                  armor(limit=10, page=0) {
-                    name,
-                    description
-                  }
-                }`;
+  const query = `{
+    ${category}(limit: ${limit}, page:${page}) {
+      name,
+      category
+    }
+  }`;
 
   try {
     const itemList = await queryGraphQL(query);
+    console.log('Item list: ', itemList);
     return itemList;
   } catch (e) {
     // do nothing we want to swallow the error
